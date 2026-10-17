@@ -1,0 +1,65 @@
+[project]
+name = "cvdj"
+version = "0.1.0"
+description = "DJ with your body: webcam movements captured by computer vision control the mix."
+readme = "README.md"
+authors = [
+    { name = "DanyelArm", email = "daniel.armasari@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.143.3",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[project.scripts]
+cvdj = "cvdj:main"
+
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.13.1",
+    "mypy>=2.4.0",
+    "pre-commit>=4.7.0",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.1",
+]
+
+# --- Linting & formatting -------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E", "W",  # pycodestyle: basic style errors
+    "F",       # pyflakes: unused imports, undefined names
+    "I",       # isort: import ordering
+    "B",       # bugbear: likely bugs
+    "UP",      # pyupgrade: use modern syntax
+    "N",       # pep8-naming
+    "SIM",     # simplifications
+    "RUF",     # ruff-specific rules
+]
+
+# --- Static type checking -------------------------------------------------
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
+
+# --- Tests & coverage -----------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --cov --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["cvdj"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true

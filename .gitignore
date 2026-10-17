@@ -1,0 +1,30 @@
+# Virtual environment (recreated from uv.lock with `uv sync`)
+.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Coverage reports
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Build output
+dist/
+build/
+*.egg-info/
+
+# Local secrets / overrides — never commit these
+.env
+
+# Editors / OS
+.idea/
+.DS_Store
+Thumbs.db
