@@ -1,0 +1,19 @@
+# Local deployment: `docker compose up --build`, then open http://localhost:8000
+services:
+  app:
+    build: .
+    image: cvdj:local
+    ports:
+      - "8000:8000"
+    environment:
+      CVDJ_LOG_LEVEL: info
+    restart: unless-stopped
+    # `docker compose watch` rebuilds the container whenever these change.
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src
+        - action: rebuild
+          path: ./pyproject.toml
+        - action: rebuild
+          path: ./uv.lock

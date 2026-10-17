@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ComputerVision_DJing</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #111; color: #eee; margin: 2rem; }
+    video { width: 100%; max-width: 640px; border-radius: 8px; background: #000; transform: scaleX(-1); }
+    button { font-size: 1rem; padding: .5rem 1rem; }
+    .ok { color: #6c6; } .bad { color: #e66; }
+  </style>
+</head>
+<body>
+  <h1>ComputerVision_DJing</h1>
+  <p>Server connection: <span id="ws-status" class="bad">connecting…</span></p>
+  <p><button id="start">Start camera</button></p>
+  <video id="video" autoplay playsinline muted></video>
+
+  <script>
+    // WebSocket to the backend. Sends a ping every second and shows the echo.
+    const status = document.getElementById("ws-status");
+    const ws = new WebSocket(`ws://${location.host}/ws`);
+    ws.onopen = () => {
+      setInterval(() => ws.send(JSON.stringify({ type: "ping", sentAt: Date.now() })), 1000);
+    };
+    ws.onmessage = (event) => {
+      const { received } = JSON.parse(event.data);
+      status.textContent = `connected (round trip ${Date.now() - received.sentAt} ms)`;
+      status.className = "ok";
+    };
+    ws.onclose = () => { status.textContent = "disconnected"; status.className = "bad"; };
+
+    // Webcam preview. The browser (not Docker) owns the camera.
+    document.getElementById("start").onclick = async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      document.getElementById("video").srcObject = stream;
+    };
+  </script>
+</body>
+</html>
