@@ -21,6 +21,11 @@ dist/
 build/
 *.egg-info/
 
+# Frontend: dependencies, downloaded model, and build output (all regenerated)
+frontend/node_modules/
+frontend/public/models/
+src/cvdj/static/
+
 # Local secrets / overrides — never commit these
 .env
 

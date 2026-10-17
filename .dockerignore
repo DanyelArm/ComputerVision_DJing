@@ -12,3 +12,8 @@ htmlcov/
 dist/
 tests/
 .env
+
+# Frontend artefacts are rebuilt inside Docker from source.
+frontend/node_modules/
+frontend/public/models/
+src/cvdj/static/
