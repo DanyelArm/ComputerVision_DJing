@@ -1,7 +1,24 @@
 # syntax=docker/dockerfile:1
 
 # ---------------------------------------------------------------------------
-# Stage 1 — builder: install dependencies and the app into a virtualenv.
+# Stage 1 — frontend: compile the TypeScript app into static files.
+# Node and node_modules stay in this stage; only the output is copied on.
+# ---------------------------------------------------------------------------
+FROM node:24-slim AS frontend
+
+WORKDIR /build/frontend
+
+# Same caching trick as the Python stage: install dependencies before copying
+# the source, so editing code doesn't trigger a reinstall.
+COPY frontend/package.json frontend/package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm npm ci
+
+COPY frontend/ ./
+# Writes to /build/src/cvdj/static (see outDir in vite.config.ts).
+RUN npm run build
+
+# ---------------------------------------------------------------------------
+# Stage 2 — builder: install dependencies and the app into a virtualenv.
 # Has uv and build caches; none of that ends up in the final image.
 # ---------------------------------------------------------------------------
 FROM python:3.12-slim AS builder
@@ -23,11 +40,12 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 COPY pyproject.toml uv.lock README.md ./
 COPY src ./src
+COPY --from=frontend /build/src/cvdj/static ./src/cvdj/static
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --no-dev --no-editable
 
 # ---------------------------------------------------------------------------
-# Stage 2 — runtime: just Python and the finished virtualenv.
+# Stage 3 — runtime: just Python and the finished virtualenv.
 # ---------------------------------------------------------------------------
 FROM python:3.12-slim AS runtime
 

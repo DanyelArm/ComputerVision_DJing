@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ComputerVision_DJing</title>
+  </head>
+  <body>
+    <main>
+      <h1>ComputerVision_DJing</h1>
+      <section class="stats">
+        <div>Server: <span id="server-status" class="bad">connecting</span></div>
+        <div>Latency: <span id="latency">–</span></div>
+        <div>Tracking: <span id="fps">–</span> fps</div>
+      </section>
+      <button id="start">Start camera</button>
+      <span id="tracker-status"></span>
+      <div class="stage">
+        <video id="video" playsinline muted></video>
+        <canvas id="overlay"></canvas>
+      </div>
+      <p id="features">no hands</p>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -63,3 +63,4 @@ branch = true
 [tool.coverage.report]
 fail_under = 80
 show_missing = true
+exclude_also = ["assert_never\\("]  # provably unreachable
